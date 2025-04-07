@@ -1,0 +1,16 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - govet
+    - whitespace
+    - gosec
+    - godox
+  allow-parallel-runners: true
+
+  settings:
+    godox:
+      keywords:
+        - FIX
+        - HACK
