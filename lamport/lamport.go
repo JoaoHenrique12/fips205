@@ -39,6 +39,7 @@ func (l *LamportSignature) genPublicKey() {
 	for _, v := range l.privateKey {
 		l.hashAlgorithm.Write(v)
 		hash := l.hashAlgorithm.Sum(nil)
+		l.hashAlgorithm.Reset()
 		l.MessageSignature.Publickey = append(l.MessageSignature.Publickey, hash)
 	}
 }
