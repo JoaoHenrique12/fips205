@@ -16,5 +16,8 @@ format:
 
 .PHONY: lint
 lint:
-	./golangci-lint-2.0.2-linux-amd64 cache clean
 	./golangci-lint-2.0.2-linux-amd64 run ./...
+
+.PHONY: lint-fix
+lint-fix:
+	./golangci-lint-2.0.2-linux-amd64 run --fix
