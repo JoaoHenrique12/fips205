@@ -45,7 +45,28 @@ func (l *LamportSignature) genPublicKey() {
 }
 
 func (l *LamportSignature) SignMessage(message string) {
+	l.Message = message
+	l.hashAlgorithm.Write([]byte(message))
+	message_hash := l.hashAlgorithm.Sum(nil)
+	l.hashAlgorithm.Reset()
 
+	pair_indice := 0
+	// This reverse ensure the picked numbers are reffering from LSB
+	// to MSB in hash output order.
+	for i := len(message_hash) - 1; i >= 0; i-- {
+		byte := message_hash[i]
+		for j := 0; j < 8; j++ {
+			chose_first_number := byte & 1
+			if chose_first_number == 0 {
+				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pair_indice])
+			}else {
+				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pair_indice + 1])
+			}
+
+			byte >>= 1
+			pair_indice+=2
+		}
+	}
 }
 
 func (l *LamportSignature) ValidateSignature(message string) {
