@@ -62,6 +62,9 @@ func (l *LamportSignature) selectHashAlgorithm(hashAlgorithmName string) {
 	}
 }
 
+// hashAlgorithmName available options: SHA256; SHA512
+//
+// privateKeySize assume 4,8 to generate 32, 64 bits numbers
 func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignature {
 	lamport := LamportSignature{}
 
@@ -77,6 +80,10 @@ func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignatu
 	return lamport
 }
 
+// hashAlgorithmName available options: SHA256; SHA512
+//
+// privateKey must be a matrix with arrays of size 4 or 8 to represent numbers with 32 or 64 bits.
+// len(privateKey) must be eq 2 * size of output hashAlgorithmName.
 func LamportBuilderInformingPrivateKey(hashAlgorithmName string, privateKey [][]byte) LamportSignature {
 	lamport := LamportSignature{}
 
