@@ -84,7 +84,8 @@ func compareBytes(a, b []byte) bool{
 	return true
 }
 
-func ValidateSignature(message string, hashAlgorithm hash.Hash, signarute Signarute) bool {
+func ValidateSignature(message, algorithmName string, signarute Signarute) bool {
+	hashAlgorithm, _ := selectHashAlgorithm(algorithmName)
 	isValid := true
 	hashAlgorithm.Write([]byte(message))
 	messageHash := hashAlgorithm.Sum(nil)
@@ -123,6 +124,7 @@ func ValidateSignature(message string, hashAlgorithm hash.Hash, signarute Signar
 	return isValid
 }
 
+// return one hash algorithm and its size
 func selectHashAlgorithm(hashAlgorithmName string) (hash.Hash, int) {
 	var hashAlgorithm hash.Hash
 	var hashAlgorithmSize int
