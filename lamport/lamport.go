@@ -8,7 +8,7 @@ import (
 	"hash"
 )
 
-type signarute struct {
+type Signarute struct {
 	PickedNumbers [][]byte
 	Publickey     [][]byte
 }
@@ -20,7 +20,7 @@ type LamportSignature struct {
 	privateKey [][]byte
 
 	Message          string
-	MessageSignature signarute
+	MessageSignature Signarute
 
 	// use 4 to generate numbers of 32 bits
 	// use 8 to generate numbers of 64 bits
@@ -44,7 +44,7 @@ func (l *LamportSignature) genPublicKey() {
 	}
 }
 
-func (l *LamportSignature) SignMessage(message string) {
+func (l *LamportSignature) SignMessage(message string) Signarute {
 	l.Message = message
 	l.hashAlgorithm.Write([]byte(message))
 	message_hash := l.hashAlgorithm.Sum(nil)
@@ -67,10 +67,61 @@ func (l *LamportSignature) SignMessage(message string) {
 			pair_indice+=2
 		}
 	}
+
+	return l.MessageSignature
 }
 
-func (l *LamportSignature) ValidateSignature(message string) {
+func compareBytes(a, b []byte) bool{
+	if len(a) != len(b) {
+		panic("could not compare []bytes with different sizes")
+	}
 
+	for i := 0; i< len(a); i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func ValidateSignature(message string, hash_algorithm hash.Hash, signarute Signarute) bool {
+	is_valid := true
+	hash_algorithm.Write([]byte(message))
+	message_hash := hash_algorithm.Sum(nil)
+	hash_algorithm.Reset()
+
+	pair_indice := 0
+	pick_idx := 0
+	// This reverse ensure the picked numbers are reffering from LSB
+	// to MSB in hash output order.
+	for i := len(message_hash) - 1; i >= 0; i-- {
+		byte := message_hash[i]
+		for j := 0; j < 8; j++ {
+			chose_first_number := byte & 1
+
+			hash_algorithm.Write(signarute.PickedNumbers[pick_idx])
+			hash_number_found := hash_algorithm.Sum(nil)
+			hash_algorithm.Reset()
+
+			if chose_first_number == 0 {
+				is_valid = compareBytes(hash_number_found, signarute.Publickey[pair_indice])
+			}else {
+				is_valid = compareBytes(hash_number_found, signarute.Publickey[pair_indice + 1])
+			}
+
+			if ! is_valid {
+				return is_valid
+			}
+
+			byte >>= 1
+			pair_indice+=2
+			pick_idx++
+		}
+	}
+
+
+	return is_valid
 }
 
 func (l *LamportSignature) selectHashAlgorithm(hashAlgorithmName string) {
