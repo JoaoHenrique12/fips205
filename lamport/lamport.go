@@ -46,24 +46,24 @@ func (l *LamportSignature) genPublicKey() {
 func (l *LamportSignature) SignMessage(message string) Signarute {
 	l.Message = message
 	l.hashAlgorithm.Write([]byte(message))
-	message_hash := l.hashAlgorithm.Sum(nil)
+	messageHash := l.hashAlgorithm.Sum(nil)
 	l.hashAlgorithm.Reset()
 
-	pair_indice := 0
+	pairIndice := 0
 	// This reverse ensure the picked numbers are reffering from LSB
 	// to MSB in hash output order.
-	for i := len(message_hash) - 1; i >= 0; i-- {
-		byte := message_hash[i]
+	for i := len(messageHash) - 1; i >= 0; i-- {
+		byte := messageHash[i]
 		for j := 0; j < 8; j++ {
-			chose_first_number := byte & 1
-			if chose_first_number == 0 {
-				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pair_indice])
+			choseFirstNumber := byte & 1
+			if choseFirstNumber == 0 {
+				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pairIndice])
 			}else {
-				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pair_indice + 1])
+				l.MessageSignature.PickedNumbers = append(l.MessageSignature.PickedNumbers, l.privateKey[pairIndice + 1])
 			}
 
 			byte >>= 1
-			pair_indice+=2
+			pairIndice+=2
 		}
 	}
 
@@ -84,43 +84,43 @@ func compareBytes(a, b []byte) bool{
 	return true
 }
 
-func ValidateSignature(message string, hash_algorithm hash.Hash, signarute Signarute) bool {
-	is_valid := true
-	hash_algorithm.Write([]byte(message))
-	message_hash := hash_algorithm.Sum(nil)
-	hash_algorithm.Reset()
+func ValidateSignature(message string, hashAlgorithm hash.Hash, signarute Signarute) bool {
+	isValid := true
+	hashAlgorithm.Write([]byte(message))
+	messageHash := hashAlgorithm.Sum(nil)
+	hashAlgorithm.Reset()
 
-	pair_indice := 0
-	pick_idx := 0
+	pairIndice := 0
+	pickIdx := 0
 	// This reverse ensure the picked numbers are reffering from LSB
 	// to MSB in hash output order.
-	for i := len(message_hash) - 1; i >= 0; i-- {
-		byte := message_hash[i]
+	for i := len(messageHash) - 1; i >= 0; i-- {
+		byte := messageHash[i]
 		for j := 0; j < 8; j++ {
-			chose_first_number := byte & 1
+			choseFirstNumber := byte & 1
 
-			hash_algorithm.Write(signarute.PickedNumbers[pick_idx])
-			hash_number_found := hash_algorithm.Sum(nil)
-			hash_algorithm.Reset()
+			hashAlgorithm.Write(signarute.PickedNumbers[pickIdx])
+			hashNumberFound := hashAlgorithm.Sum(nil)
+			hashAlgorithm.Reset()
 
-			if chose_first_number == 0 {
-				is_valid = compareBytes(hash_number_found, signarute.Publickey[pair_indice])
+			if choseFirstNumber == 0 {
+				isValid = compareBytes(hashNumberFound, signarute.Publickey[pairIndice])
 			}else {
-				is_valid = compareBytes(hash_number_found, signarute.Publickey[pair_indice + 1])
+				isValid = compareBytes(hashNumberFound, signarute.Publickey[pairIndice + 1])
 			}
 
-			if ! is_valid {
-				return is_valid
+			if ! isValid {
+				return isValid
 			}
 
 			byte >>= 1
-			pair_indice+=2
-			pick_idx++
+			pairIndice+=2
+			pickIdx++
 		}
 	}
 
 
-	return is_valid
+	return isValid
 }
 
 func selectHashAlgorithm(hashAlgorithmName string) (hash.Hash, int) {
