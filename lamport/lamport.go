@@ -22,14 +22,13 @@ type LamportSignature struct {
 	Message          string
 	MessageSignature Signarute
 
-	// use 4 to generate numbers of 32 bits
-	// use 8 to generate numbers of 64 bits
+	// 32 or 64 to generate numbers with this amount of bits
 	privateKeySize int
 }
 
 func (l *LamportSignature) genPrivateKey() {
 	for i := 0; i < l.algorithmSize*2; i++ {
-		number := make([]byte, l.privateKeySize)
+		number := make([]byte, l.privateKeySize/8)
 		rand.Read(number) // nolint: gosec
 		l.privateKey = append(l.privateKey, number)
 	}
@@ -125,28 +124,28 @@ func ValidateSignature(message string, hash_algorithm hash.Hash, signarute Signa
 }
 
 func selectHashAlgorithm(hashAlgorithmName string) (hash.Hash, int) {
-	var hash_algorithm hash.Hash
-	var hash_algorithm_size int
+	var hashAlgorithm hash.Hash
+	var hashAlgorithmSize int
 
 	switch hashAlgorithmName {
 	case "SHA256":
-		hash_algorithm = sha256.New()
-		hash_algorithm_size = 256
+		hashAlgorithm = sha256.New()
+		hashAlgorithmSize = 256
 	case "SHA512":
-		hash_algorithm = sha512.New()
-		hash_algorithm_size = 512
+		hashAlgorithm = sha512.New()
+		hashAlgorithmSize = 512
 	}
-	return hash_algorithm, hash_algorithm_size
+	return hashAlgorithm, hashAlgorithmSize
 }
 
 // hashAlgorithmName available options: SHA256; SHA512
 //
-// privateKeySize assume 4,8 to generate 32, 64 bits numbers
+// privateKeySize assume 32 or 64 to indicate the number of bits
 func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignature {
 	lamport := LamportSignature{}
 
-	if !(privateKeySize == 4 || privateKeySize == 8) {
-		panic("privatekeysize must be eq to 4 or 8 to use numbers of 32 or 64 bits")
+	if !(privateKeySize == 32 || privateKeySize == 64) {
+		panic("privateKeySize must be eq to 32 or 64")
 	}
 	lamport.privateKeySize = privateKeySize
 
@@ -172,11 +171,11 @@ func LamportBuilderInformingPrivateKey(hashAlgorithmName string, privateKey [][]
 
 	lamport.privateKey = privateKey
 
-	lamport.privateKeySize = len(privateKey[0])
+	lamport.privateKeySize = len(privateKey[0]) * 8
 
 	privateKeySize := lamport.privateKeySize
-	if !(privateKeySize == 4 || privateKeySize == 8) {
-		panic("private key size must be eq to 4 or 8 to use numbers with 32 or 64 bits")
+	if !(privateKeySize == 32 || privateKeySize == 64) {
+		panic("private key size must be eq 32 or 64")
 	}
 
 	lamport.genPublicKey()
