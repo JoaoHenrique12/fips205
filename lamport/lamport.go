@@ -124,15 +124,19 @@ func ValidateSignature(message string, hash_algorithm hash.Hash, signarute Signa
 	return is_valid
 }
 
-func (l *LamportSignature) selectHashAlgorithm(hashAlgorithmName string) {
+func selectHashAlgorithm(hashAlgorithmName string) (hash.Hash, int) {
+	var hash_algorithm hash.Hash
+	var hash_algorithm_size int
+
 	switch hashAlgorithmName {
 	case "SHA256":
-		l.hashAlgorithm = sha256.New()
-		l.algorithmSize = 256
+		hash_algorithm = sha256.New()
+		hash_algorithm_size = 256
 	case "SHA512":
-		l.hashAlgorithm = sha512.New()
-		l.algorithmSize = 512
+		hash_algorithm = sha512.New()
+		hash_algorithm_size = 512
 	}
+	return hash_algorithm, hash_algorithm_size
 }
 
 // hashAlgorithmName available options: SHA256; SHA512
@@ -146,7 +150,8 @@ func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignatu
 	}
 	lamport.privateKeySize = privateKeySize
 
-	(&lamport).selectHashAlgorithm(hashAlgorithmName)
+	lamport.hashAlgorithm, lamport.algorithmSize = selectHashAlgorithm(hashAlgorithmName)
+
 	(&lamport).genPrivateKey()
 	(&lamport).genPublicKey()
 
@@ -160,7 +165,7 @@ func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignatu
 func LamportBuilderInformingPrivateKey(hashAlgorithmName string, privateKey [][]byte) LamportSignature {
 	lamport := LamportSignature{}
 
-	(&lamport).selectHashAlgorithm(hashAlgorithmName)
+	lamport.hashAlgorithm, lamport.algorithmSize = selectHashAlgorithm(hashAlgorithmName)
 	if len(privateKey) != lamport.algorithmSize*2 {
 		panic(fmt.Sprintf("invalid number of bytes given for privateKey, for %v you must a private key with %v numbers", hashAlgorithmName, lamport.algorithmSize*2))
 	}
