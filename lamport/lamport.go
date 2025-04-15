@@ -19,7 +19,7 @@ type LamportSignature struct {
 
 	privateKey [][]byte
 
-	Message          string
+	Message          []byte
 	MessageSignature Signarute
 
 	// 32 or 64 to generate numbers with this amount of bits
@@ -43,9 +43,9 @@ func (l *LamportSignature) genPublicKey() {
 	}
 }
 
-func (l *LamportSignature) SignMessage(message string) Signarute {
+func (l *LamportSignature) SignMessage(message []byte) Signarute {
 	l.Message = message
-	l.hashAlgorithm.Write([]byte(message))
+	l.hashAlgorithm.Write(message)
 	messageHash := l.hashAlgorithm.Sum(nil)
 	l.hashAlgorithm.Reset()
 
@@ -84,10 +84,10 @@ func compareBytes(a, b []byte) bool{
 	return true
 }
 
-func ValidateSignature(message, algorithmName string, signarute Signarute) bool {
+func ValidateSignature(message []byte, algorithmName string, signarute Signarute) bool {
 	hashAlgorithm, _ := selectHashAlgorithm(algorithmName)
 	isValid := true
-	hashAlgorithm.Write([]byte(message))
+	hashAlgorithm.Write(message)
 	messageHash := hashAlgorithm.Sum(nil)
 	hashAlgorithm.Reset()
 
