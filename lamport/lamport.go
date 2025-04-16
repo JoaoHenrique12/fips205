@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/sha512"
-	"fmt"
 	"hash"
 )
 
@@ -155,32 +154,6 @@ func LamportBuilder(hashAlgorithmName string, privateKeySize int) LamportSignatu
 
 	(&lamport).genPrivateKey()
 	(&lamport).genPublicKey()
-
-	return lamport
-}
-
-// hashAlgorithmName available options: SHA256; SHA512
-//
-// privateKey must be a matrix with arrays of size 4 or 8 to represent numbers with 32 or 64 bits.
-// len(privateKey) must be eq 2 * size of output hashAlgorithmName.
-func LamportBuilderInformingPrivateKey(hashAlgorithmName string, privateKey [][]byte) LamportSignature {
-	lamport := LamportSignature{}
-
-	lamport.hashAlgorithm, lamport.algorithmSize = selectHashAlgorithm(hashAlgorithmName)
-	if len(privateKey) != lamport.algorithmSize*2 {
-		panic(fmt.Sprintf("invalid number of bytes given for privateKey, for %v you must a private key with %v numbers", hashAlgorithmName, lamport.algorithmSize*2))
-	}
-
-	lamport.privateKey = privateKey
-
-	lamport.privateKeySize = len(privateKey[0]) * 8
-
-	privateKeySize := lamport.privateKeySize
-	if !(privateKeySize == 32 || privateKeySize == 64) {
-		panic("private key size must be eq 32 or 64")
-	}
-
-	lamport.genPublicKey()
 
 	return lamport
 }
