@@ -10,6 +10,19 @@ The github pipeline check messages either.
 
 Configs for commit lint can be found in file [.commitlint.yml](.commitlint.yml).
 
+Commands executed to create this hooks in .commitlint
+```bash
+./commitlint-0.10.1 init
+./commitlint-0.10.1 hook create
+```
+
+This commands updates 
+```bash
+git config --get core.hooksPath
+```
+
+Because of it, put your pre-commit/git hooks in .commitlint.
+
 ## Makefile
 
 About the repository configuration there is a few commands available in [Makefile](Makefile).
