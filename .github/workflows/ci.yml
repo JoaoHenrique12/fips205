@@ -1,4 +1,4 @@
-name: Go Test Coverage CI
+name: Test and Coverage
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: set up go
+    - name: Set Up GoLang
       uses: actions/setup-go@v5
       with:
         go-version: '==1.24'
@@ -23,11 +23,12 @@ jobs:
       run: |
         make coverage
         coverage_output=$(make coverage-inspect-text)
-        echo "COVERAGE_OUTPUT<<EOF"
+        echo "--------------------------------------------------------------------------------"
         echo "$coverage_output"
-        echo "EOF"
+        echo "--------------------------------------------------------------------------------"
         # Extract the percentage (assuming it's the last number followed by %)
-        PERCENTAGE=$(echo "$coverage_output" | grep -oE '[0-9]+\.[0-9]+%' | tail -n 1 | sed 's/%//')
+        COVERAGE_PERCENTAGE=$(echo "$coverage_output" | grep -oE '[0-9]+\.[0-9]+%' | tail -n 1 | sed 's/%//')
+        echo "COVERAGE_PERCENTAGE=$COVERAGE_PERCENTAGE" >> "$GITHUB_OUTPUT"
     - name: Verify Coverage
       if: steps.coverage.outputs.COVERAGE_PERCENTAGE < 90
       run: |
