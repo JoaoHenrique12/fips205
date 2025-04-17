@@ -1,0 +1,39 @@
+name: Go Test Coverage CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: set up go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '==1.24'
+
+    - name: Run Coverage
+      id: coverage
+      run: |
+        make coverage
+        coverage_output=$(make coverage-inspect-text)
+        echo "COVERAGE_OUTPUT<<EOF"
+        echo "$coverage_output"
+        echo "EOF"
+        # Extract the percentage (assuming it's the last number followed by %)
+        PERCENTAGE=$(echo "$coverage_output" | grep -oE '[0-9]+\.[0-9]+%' | tail -n 1 | sed 's/%//')
+    - name: Verify Coverage
+      if: steps.coverage.outputs.COVERAGE_PERCENTAGE < 90
+      run: |
+        echo "Code coverage is below 90% (${{ steps.coverage.outputs.COVERAGE_PERCENTAGE }}%). Failing the build."
+        exit 1
+    - name: Coverage Success
+      if: steps.coverage.outputs.COVERAGE_PERCENTAGE >= 90
+      run: |
+        echo "Code coverage is at or above 90% (${{ steps.coverage.outputs.COVERAGE_PERCENTAGE }}%)."
