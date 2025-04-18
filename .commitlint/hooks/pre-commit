@@ -1,0 +1,14 @@
+#!/bin/sh
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" = "main" ]; then
+  echo "Commits to the 'main' branch are not allowed."
+  return 1
+fi
+
+make lint
+if [ $? -ne 0 ]; then
+  echo "Linting failed. Commit aborted."
+  echo "Try use make lint-fix or verifie your code."
+  return 1
+fi
