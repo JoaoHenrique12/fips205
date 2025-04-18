@@ -2,8 +2,8 @@
 
 if ! type ./commitlint-0.10.1 >/dev/null 2>/dev/null; then
 	echo ""
-    echo "./commitlint-0.10.1 could not be found"
-    echo "try again after installing commitlint or add commitlint to PATH"
+  echo "./commitlint-0.10.1 could not be found"
+  echo "try again after installing commitlint or add commitlint to PATH"
 	echo ""
 	echo "ensure you are in root of this project, it was configured to execute ./commitlint-0.10.1"
 	echo "you may edit file .commitlint/hooks/commit-msg either to your needs"
