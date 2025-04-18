@@ -4,17 +4,13 @@
 
 [Why use conventional commits ?](https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits)
 
-To lint commit messages in this repository was used [commitlint-go](https://github.com/conventionalcommit/commitlint) and
-[comitlint-js](https://github.com/conventional-changelog/commitlint).
+To lint commit messages in this repository was used [commitlint writen in go](https://github.com/conventionalcommit/commitlint).
 
 The binary [commitlint-0.10.1](commitlint-0.10.1) is used locally by git hooks.
 
-The github pipeline check messages either, however [commitlint-js](https://github.com/conventional-changelog/commitlint) is used.
-Commitlint is a tool more sofisticated, however it requires the instalation of npm to do it. Therefore, it is present on pipeline
-to validate all commits before they achieve branch main; and locally commitlint-0.10.1 is used to do a pre-validation of your commit
-messages.
+The github pipeline check messages either.
 
-Configs for local commit lint can be found in file [.commitlint.yml](.commitlint.yml).
+Configs for commit lint can be found in file [.commitlint.yml](.commitlint.yml).
 
 Commands executed to create this hooks in .commitlint
 ```bash
@@ -28,6 +24,16 @@ git config --get core.hooksPath
 ```
 
 Because of it, put your pre-commit/git hooks inside .commitlint/.
+
+### Why use commitlint written in GoLang
+
+At beginnig was considered to use a [commitlint wrotten in JavaScript](https://github.com/conventional-changelog/commitlint), wich is a 
+popular project to check commit messages in github/gitlab pipelines and already have a pre-defined [ci config](https://commitlint.js.org/guides/ci-setup.html).
+The pre-defined file shows how to validate all commits in a PR, this functionallity is not directed covered by the go commit linter. Despite this advantages,
+this project uses the go version with a bash code to ensure all commits in a PR are valids to do it, check it in [.github/workflows/ci.yaml](.github/workflows/ci.yaml).
+The reason for it is the js version requires install npm, npx and node; this install was taking ~1:30min and the acutal lint does not have this overhead. Furthermore,
+to validate commits locally it should require this binaries installed (an unecessary overhead).
+
 
 ## Makefile
 
