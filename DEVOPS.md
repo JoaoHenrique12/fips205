@@ -2,13 +2,19 @@
 
 ## Commit Lint
 
-To lint commit messages in this repository was used [commitlint](https://github.com/conventionalcommit/commitlint).
+[Why use conventional commits ?](https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits)
+
+To lint commit messages in this repository was used [commitlint-go](https://github.com/conventionalcommit/commitlint) and
+[comitlint-js](https://github.com/conventional-changelog/commitlint).
 
 The binary [commitlint-0.10.1](commitlint-0.10.1) is used locally by git hooks.
 
-The github pipeline check messages either.
+The github pipeline check messages either, however [commitlint-js](https://github.com/conventional-changelog/commitlint) is used.
+Commitlint is a tool more sofisticated, however it requires the instalation of npm to do it. Therefore, it is present on pipeline
+to validate all commits before they achieve branch main; and locally commitlint-0.10.1 is used to do a pre-validation of your commit
+messages.
 
-Configs for commit lint can be found in file [.commitlint.yml](.commitlint.yml).
+Configs for local commit lint can be found in file [.commitlint.yml](.commitlint.yml).
 
 Commands executed to create this hooks in .commitlint
 ```bash
@@ -16,12 +22,12 @@ Commands executed to create this hooks in .commitlint
 ./commitlint-0.10.1 hook create
 ```
 
-This commands updates 
+This commands updates the following path
 ```bash
 git config --get core.hooksPath
 ```
 
-Because of it, put your pre-commit/git hooks in .commitlint.
+Because of it, put your pre-commit/git hooks inside .commitlint/.
 
 ## Makefile
 
@@ -53,9 +59,9 @@ Configs for this repository are in [.golangci.yml](.golangci.yml).
 
 #### lint false positives
 
-If you really believe lint is returning a false positive use a commentary informing wich lint should be ignore in the desired line.
+If you really believe lint is returning a false positive, then use a commentary informing wich line lint should ignore.
 
-sample:
+Sample:
 
 ```go
 
