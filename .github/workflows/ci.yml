@@ -39,11 +39,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set Up GoLang
-      uses: actions/setup-go@v5
-      with:
-        go-version: '==1.24'
-
     - name: Run Code Lint
       id: code_lint
       run: |
