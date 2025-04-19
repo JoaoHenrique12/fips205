@@ -32,17 +32,22 @@ jobs:
           fi
           echo "----------------------------------------"
         done
-  code_lint:
+  cyclo:
     runs-on: ubuntu-latest
     needs: commit_lint
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set Up GoLang
-      uses: actions/setup-go@v5
-      with:
-        go-version: '==1.24'
+    - name: Cyclomantic Complexity Metric
+      run: |
+        make cyclo
+  code_lint:
+    runs-on: ubuntu-latest
+    needs: cyclo
+
+    steps:
+    - uses: actions/checkout@v4
 
     - name: Run Code Lint
       id: code_lint
