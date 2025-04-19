@@ -1,0 +1,40 @@
+name: Create Release
+
+on:
+  workflow_dispatch: # Manual trigger for releases
+    inputs:
+      trigger_release:
+        description: 'Click this button to trigger a new release'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Up GoLang
+        uses: actions/setup-go@v5
+        with:
+          go-version: '==1.24'
+      - name: Run Tests
+        run: make coverage
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '==1.24'
+      - name: Run go-semantic-release
+        uses: go-semantic-release/action@v1
+        with:
+          github-token: ${{ secrets.SEMANTIC_SECRET }}
+          changelog-file: CHANGELOG.md
