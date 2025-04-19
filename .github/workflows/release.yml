@@ -1,0 +1,33 @@
+name: Create Release
+on:
+  workflow_dispatch: # Manual trigger for releases
+    inputs:
+      trigger_release:
+        description: 'Click this button to trigger a new release'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensure all history is available for semantic-release
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '==1.24'
+      - name: Run go-semantic-release
+        uses: go-semantic-release/action@v1
+        with:
+          github-token: ${{ secrets.SEMANTIC_SECRET }}
+          changelog-file: CHANGELOG.md
+          hooks: |
+            - type: changelog
+              output: CHANGELOG.md
+              commit_parser: "{{.Subject}}"
+              commit_template: "- {{.Subject}}"
