@@ -42,6 +42,12 @@ to understand and less risky to modify.* [IBM reference](https://www.ibm.com/doc
 
 Given that, gocyclo is configured to check this complexity, and gitooks do not allow commit codes with cyclomatic over 8.
 
+## Go Semantic Release
+
+[go-semantic-release](https://github.com/go-semantic-release/semantic-release?tab=readme-ov-file) take advantage of conventional commits
+to create tags based on [semver](https://semver.org/), furthermore it automaitcly generates a changelog for each release.
+Example: [v1.0.0](https://github.com/JoaoHenrique12/fips205/releases/tag/v1.0.0)
+
 
 ## Makefile
 
