@@ -82,11 +82,10 @@ Formats all *.go files found in this repository.
 
 ### lint && lint-fix
 
-```bash
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-```
+This installlation is through binary from github, go install only find versions 1.x, and the config
+file defined for this tool uses version 2. Use make install-ci-tools.
 
-Execute golangci-lint-2.0.2 binary, it was took from [repository](https://github.com/golangci/golangci-lint).
+[Repository](https://github.com/golangci/golangci-lint).
 
 Configuration reference can be found [here](https://github.com/golangci/golangci-lint/blob/main/.golangci.reference.yml).
 
