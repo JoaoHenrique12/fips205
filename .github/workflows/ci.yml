@@ -57,6 +57,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set Up GoLang
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Install golangci-lint
+      run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v2.1.2
+
+
     - name: Run Code Lint
       id: code_lint
       run: |

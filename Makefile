@@ -16,16 +16,16 @@ format:
 
 .PHONY: lint
 lint:
-	./golangci-lint-2.0.2-linux-amd64 run ./...
+	golangci-lint run ./...
 
 .PHONY: lint-fix
 lint-fix:
-	./golangci-lint-2.0.2-linux-amd64 run --fix
+	golangci-lint run --fix
 
 .PHONY: cyclo
 cyclo:
-	./gocyclo-0.6.0 -over 8 -ignore test_* ./
+	gocyclo -over 8 -ignore test_* ./
 
 .PHONY: top5-cyclo
 top5-cyclo:
-	./gocyclo-0.6.0 -top 5 -ignore test_* ./
+	gocyclo -top 5 -ignore test_* ./
