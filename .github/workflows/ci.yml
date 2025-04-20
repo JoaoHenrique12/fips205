@@ -13,10 +13,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set Up GoLang
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Install commitlint
+      run: go install github.com/conventionalcommit/commitlint@latest
+
     - name: Commit Lint Last Commit
       if: github.event_name == 'push'
       run: |
-        git show -s --format=%s | ./commitlint-0.10.1 lint
+        git show -s --format=%s | commitlint lint
     - name: Commit Lint PR
       if: github.event_name == 'pull_request'
       run: |
@@ -25,7 +33,7 @@ jobs:
         BASE_COMMIT=$(git rev-parse origin/${{ github.base_ref }}~1)
         git log --pretty=format:"%H" $BASE_COMMIT..HEAD | while read commit_hash; do
           echo "Linting commit: $commit_hash"
-          git show -s --format=%s "$commit_hash" | ./commitlint-0.10.1 lint
+          git show -s --format=%s "$commit_hash" | commitlint lint
           if [ $? -ne 0 ]; then
             echo "::error::Commit linting failed for commit $commit_hash"
             exit 1
@@ -63,7 +71,7 @@ jobs:
     - name: Set Up GoLang
       uses: actions/setup-go@v5
       with:
-        go-version: '==1.24'
+        go-version: '1.24'
 
     - name: Run Coverage
       id: coverage
