@@ -34,6 +34,14 @@ this project uses the go version with a bash code to ensure all commits in a PR 
 The reason for it is the js version requires install npm, npx and node; this install was taking ~1:30min and the acutal lint does not have this overhead. Furthermore,
 to validate commits locally it should require this binaries installed (an unecessary overhead).
 
+## Gocyclo
+
+*Cyclomatic complexity is a measurement developed by Thomas McCabe to determine the stability and level of confidence in a program.
+It measures the number of linearly-independent paths through a program module. Programs with lower Cyclomatic complexity are easier
+to understand and less risky to modify.* [IBM reference](https://www.ibm.com/docs/en/raa/6.1.0?topic=metrics-cyclomatic-complexity)
+
+Given that, gocyclo is configured to check this complexity, and gitooks do not allow commit codes with cyclomatic over 8.
+
 
 ## Makefile
 
