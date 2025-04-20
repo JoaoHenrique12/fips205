@@ -1,14 +1,12 @@
 #!/bin/sh
 
-if ! type ./commitlint-0.10.1 >/dev/null 2>/dev/null; then
+if ! type commitlint >/dev/null 2>/dev/null; then
 	echo ""
-  echo "./commitlint-0.10.1 could not be found"
+  echo "commitlint could not be found"
   echo "try again after installing commitlint or add commitlint to PATH"
+  echo "go install github.com/conventionalcommit/commitlint@latest"
 	echo ""
-	echo "ensure you are in root of this project, it was configured to execute ./commitlint-0.10.1"
-	echo "you may edit file .commitlint/hooks/commit-msg either to your needs"
-    exit 2;
+  exit 2;
 fi
 
-./commitlint-0.10.1 lint --message $1
-
+commitlint lint --message $1

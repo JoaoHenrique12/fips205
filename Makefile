@@ -1,3 +1,16 @@
+.PHONY: install-ci-tools
+install-ci-tools:
+	go install github.com/conventionalcommit/commitlint@latest
+	go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+	@if ! command -v golangci-lint >/dev/null || [ "$$(golangci-lint --version | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')" != "v2.1.2" ]; then \
+		echo "Installing golangci-lint v2.1.2..."; \
+		curl -sSL https://github.com/golangci/golangci-lint/releases/download/v2.1.2/golangci-lint-2.1.2-linux-amd64.tar.gz | tar -xz; \
+		sudo mv golangci-lint-2.1.2-linux-amd64/golangci-lint /usr/local/bin/; \
+		rm -rf golangci-lint-2.1.2-linux-amd64
+	else \
+		echo "golangci-lint v2.1.2 already installed."; \
+	fi
+
 .PHONY: coverage
 coverage:
 	go test ./... -coverprofile=coverage.out
@@ -16,16 +29,12 @@ format:
 
 .PHONY: lint
 lint:
-	./golangci-lint-2.0.2-linux-amd64 run ./...
+	golangci-lint run ./...
 
 .PHONY: lint-fix
 lint-fix:
-	./golangci-lint-2.0.2-linux-amd64 run --fix
-
-.PHONY: cyclo
-cyclo:
-	./gocyclo-0.6.0 -over 8 -ignore test_* ./
+	golangci-lint run --fix
 
 .PHONY: top5-cyclo
 top5-cyclo:
-	./gocyclo-0.6.0 -top 5 -ignore test_* ./
+	gocyclo -top 5 -ignore test_* ./

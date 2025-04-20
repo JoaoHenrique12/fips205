@@ -7,10 +7,17 @@ linters:
     - whitespace
     - gosec
     - godox
+    - gocyclo
   allow-parallel-runners: true
 
-  settings:
-    godox:
-      keywords:
-        - FIX
-        - HACK
+linters-settings:
+  godox:
+    keywords:
+      - FIX
+      - HACK
+  gocyclo:
+    min-complexity: 8
+
+issues:
+  exclude-files:
+    - ^test_.*\.go$
