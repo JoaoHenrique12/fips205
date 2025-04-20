@@ -22,10 +22,6 @@ lint:
 lint-fix:
 	golangci-lint run --fix
 
-.PHONY: cyclo
-cyclo:
-	gocyclo -over 8 -ignore test_* ./
-
 .PHONY: top5-cyclo
 top5-cyclo:
 	gocyclo -top 5 -ignore test_* ./
