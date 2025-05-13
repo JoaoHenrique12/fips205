@@ -1,12 +1,12 @@
 # DevOps
 
-Use make install-ci-tools to install all explained tools below.
+Use make install-ci-tools to install locally all the explained tools below.
 
 ## Commit Lint
 
 [Why use conventional commits ?](https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits)
 
-To lint commit messages in this repository was used [commitlint writen in go](https://github.com/conventionalcommit/commitlint).
+To lint commit messages in this repository was used [commitlint written in go](https://github.com/conventionalcommit/commitlint).
 
 ```bash
 go install github.com/conventionalcommit/commitlint@latest
@@ -27,16 +27,16 @@ This commands updates the following path
 git config --get core.hooksPath
 ```
 
-Because of it, put your pre-commit/git hooks inside .commitlint/.
+Because of it, put your pre-commit/git hooks inside .commitlint/, if you wish update them.
 
 ### Why use commitlint written in GoLang
 
-At beginnig was considered to use a [commitlint wrotten in JavaScript](https://github.com/conventional-changelog/commitlint), wich is a 
-popular project to check commit messages in github/gitlab pipelines. This tool already have a pre-defined [ci config](https://commitlint.js.org/guides/ci-setup.html).
-The pre-defined file shows how to validate all commits in a PR, this functionallity is not directed covered by the go commit linter. Despite this advantages,
-this project uses the go version with a bash code to ensure all commits in a PR are valids to do it, check it in [.github/workflows/ci.yaml](.github/workflows/ci.yaml).
-The reason for it is the js version requires install npm, npx and node; this install was taking ~1:30min and the acutal lint does not have this amount of time. Furthermore,
-to validate commits locally it should require this binaries installed (an unecessary overhead).
+At beginnig was considered to use [commitlint written in JavaScript](https://github.com/conventional-changelog/commitlint), wich is a 
+popular project to check commit messages in github/gitlab pipelines. This tool already has a pre-defined [ci config](https://commitlint.js.org/guides/ci-setup.html).
+The pre-defined file shows how to validate all commits in a PR, this functionallity is not directed covered by the go commit linter. Despite these advantages,
+this project uses the go version with a bash code to ensure all commits in a PR are valid. To see how it's done, check it in [.github/workflows/ci.yaml](.github/workflows/ci.yaml).
+The reason for this is that the JS version requires installing npm, npx, and Node; this installation was taking ~1:30min on pipeline, and the actual lint does not have this
+amount of time. Furthermore, to validate commits locally, it would require these binaries installed (an unnecessary overhead).
 
 ## Gocyclo
 
@@ -50,7 +50,7 @@ to understand and less risky to modify.* [IBM reference](https://www.ibm.com/doc
 
 Given that, gocyclo is configured via golangci-lint to check this complexity, and gitooks do not allow commit codes with cyclomatic over 8.
 
-The command make top5-cyclo is available either.
+The command make top5-cyclo is available as well.
 
 ## Go Semantic Release
 
@@ -83,9 +83,8 @@ Formats all *.go files found in this repository.
 ### lint && lint-fix
 
 This installlation is through binary from github, go install only find versions 1.x, and the config
-file defined for this tool uses version 2. Use make install-ci-tools.
-
-[Repository](https://github.com/golangci/golangci-lint).
+file defined for this tool uses version 2. Use make install-ci-tools to get this binary.
+[golangci-lint official repository](https://github.com/golangci/golangci-lint).
 
 Configuration reference can be found [here](https://github.com/golangci/golangci-lint/blob/main/.golangci.reference.yml).
 
@@ -93,7 +92,8 @@ Configs for this repository are in [.golangci.yml](.golangci.yml).
 
 #### lint false positives
 
-If you really believe lint is returning a false positive, then use a commentary informing wich line lint should ignore.
+If you really believe the linter is returning a false positive, then use a commentary informing which line the linter
+should ignore.
 
 Sample:
 
@@ -108,7 +108,7 @@ func (l *LamportSignature) genPrivateKey() {
 }
 ```
 
-In this case gosec was complaining about a possible error treatment, however reading rand.Read docs you may find the
+In this case, gosec was complaining about a possible error treatment; however, reading rand.Read docs you may find the
 following comment.
 
 ```go
@@ -121,4 +121,4 @@ following comment.
 func Read(b []byte) (n int, err error) {
 ```
 
-Therefore disable lint for this specific line is reasoably.
+Therefore, disable lint for this specific line is reasoably.
